@@ -1,4 +1,4 @@
-// AuthModal.jsx contain the components for AuthModal which is rendered in Home.jsx ("/" route), 
+// AuthModal.jsx contain the components for AuthModal which is rendered in Home.jsx ('/' route), 
 // it can be also accessed through the navbar.
 // AuthModal.jsx contains default export of AuthModal component.
 
@@ -49,9 +49,9 @@ const AuthModal = ({ setShowModal, isSignUp, setIsSignUp }) => {
     // try signing up and catch if error.
     try {
       if (isSignUp && (password !== confirmPassword)) {
-        setError("Password need to match!!")
+        setError('Password need to match!!')
       }
-      console.log("Make a post request to the database");
+      console.log('Make a post request to the database');
     } 
     catch(error) {
       console.log(error);
@@ -64,34 +64,34 @@ const AuthModal = ({ setShowModal, isSignUp, setIsSignUp }) => {
       <div className='close-icon' onClick={handleClick}>&#10006;</div>
 
       {/* Add heading and description */}
-      <h2>{isSignUp ? "Create Account" : "Log in"}</h2>
+      <h2>{isSignUp ? 'Create Account' : 'Log in'}</h2>
       <p>By clicking Log In, you agree to our Terms. Learn how we process your data in our Privacy Policy and Cookies Policy.</p>
 
       {/* Create the auth form */}
       <form onSubmit={handleSubmit}>
         {/* email input */}
-        <input type="email" name="email" 
-              id="email" placeholder='email' 
+        <input type='email' name='email' 
+              id='email' placeholder='email' 
               required={true} 
               onChange={(e) => setEmail(e.target.value)} 
         />
         {/* password input */}
-        <input type="password" name="password" 
-              id="password" placeholder='password' 
+        <input type='password' name='password' 
+              id='password' placeholder='password' 
               required={true} 
               onChange={(e) => setPassword(e.target.value)} 
         />
         {/* confirm password input if client is not signed up */}
         {
           isSignUp && 
-          <input type="password" name="password-check" 
-                id="password-check" placeholder='confirm password' 
+          <input type='password' name='password-check' 
+                id='password-check' placeholder='confirm password' 
                 required={true} 
                 onChange={(e) => setConfirmPassword(e.target.value)} 
           />
         }
         {/* submit */}
-        <input type="submit" className='secondary-button' />
+        <input type='submit' className='secondary-button' />
         {/* Show if any error */}
         <p>{error}</p>
         

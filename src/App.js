@@ -26,9 +26,9 @@ const App = () => {
       {/* Create Routes */}
       <Routes>
         {/* Create path for each page */}
-        <Route path={"/"} element={<Home />} />
-        <Route path={"/dashboard"} element={<Dashboard />} />
-        <Route path={"/onboarding"} element={<OnBoarding />} />
+        <Route path={'/'} element={<Home />} />
+        <Route path={'/dashboard'} element={<Dashboard />} />
+        <Route path={'/onboarding'} element={<OnBoarding />} />
       </Routes>
     </BrowserRouter>
   );

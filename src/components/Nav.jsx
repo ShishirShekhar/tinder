@@ -1,4 +1,4 @@
-// Nav.jsx contain the components for Navbar which is called in Home.jsx ("/" route)
+// Nav.jsx contain the components for Navbar which is called in Home.jsx ('/' route)
 // Nav.jsx contains default export of Nav component.
 
 /* Nav component:
@@ -24,7 +24,7 @@
 import React from 'react';
 // import logos
 import whiteLogo from '../images/tinder_logo_white.png';
-import colorLogo from "../images/color-logo-tinder.png";
+import colorLogo from '../images/color-logo-tinder.png';
 
 // Create Nav component
 const Nav = ({ minimal, authToken, showModal, setShowModal, setIsSignUp }) => {
@@ -38,8 +38,8 @@ const Nav = ({ minimal, authToken, showModal, setShowModal, setIsSignUp }) => {
     return (
         <nav className='nav'>
             {/* Add color logo and white logo according to minimal */}
-            <div className="logo-container">
-                <img src={minimal ? colorLogo : whiteLogo} alt="logo" className="logo" />
+            <div className='logo-container'>
+                <img src={minimal ? colorLogo : whiteLogo} alt='logo' className='logo' />
             </div>
             {/* Show login in button if authToken and minimal are false */}
             {

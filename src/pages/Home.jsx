@@ -1,4 +1,4 @@
-// Home.jsx contains all the components for "/" route.
+// Home.jsx contains all the components for '/' route.
 // Home.jsx contains default export of Home component.
 
 /* Home component:
@@ -65,7 +65,7 @@ const Home = () => {
 
                 {/* Create button with value: sign-out, create-an-account according to authToken */}
                 <button className='primary-button' onClick={handleClick}>
-                    {authToken ? "Sign out" : "Create an account"}
+                    {authToken ? 'Sign out' : 'Create an account'}
                 </button>
 
                 {/* Render AuthModal according to showModal */}
