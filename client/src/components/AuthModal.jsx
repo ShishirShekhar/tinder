@@ -26,9 +26,13 @@
 // Import required modules
 import React from 'react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 // Create AuthModal component
 const AuthModal = ({ setShowModal, isSignUp, setIsSignUp }) => {
+  // Initialize navigate.
+  let navigate = useNavigate();
 
   // Create required state.
   const [email, setEmail] = useState(null);
@@ -43,16 +47,23 @@ const AuthModal = ({ setShowModal, isSignUp, setIsSignUp }) => {
   };
 
   // Create a function to submit behavior.
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     // prevent default behavior of form.
     e.preventDefault();
     // try signing up and catch if error.
     try {
       if (isSignUp && (password !== confirmPassword)) {
         setError('Password need to match!!')
+        return;
       }
-      console.log('Make a post request to the database');
-    } 
+      // Send email and password to backend.
+      const response = await axios.post('http://localhost:8000/signup', { email, password });
+      // If success navigate to '/onboarding'.\
+      const success = response.status === 201;
+      if (success) {
+        navigate('/onboarding');
+      };
+    }
     catch(error) {
       console.log(error);
     }
