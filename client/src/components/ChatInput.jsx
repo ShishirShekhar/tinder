@@ -18,7 +18,7 @@ import { useState } from 'react';
 
 const ChatInput = () => {
     // Create state for textarea.
-    const [textarea, setTextarea] = useState(null);
+    const [textarea, setTextarea] = useState("");
 
     // Create a function to handle change.
     const handleChange = (e) => {

@@ -2,7 +2,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const { MongoClient } = require('mongodb');
-const { v4: uuid4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
@@ -18,7 +18,7 @@ app.use(cors());
 // Create routes
 // Get '/'
 app.get('/', (req, res) => {
-    res.json("Welcome to Tinder");
+    res.json("Welcome to Tinder Clone");
 })
 
 // Post '/signup'
@@ -29,9 +29,9 @@ app.post('/signup', async (req, res) => {
     // Get the email and password.
     const { email, password } = req.body;
     // Generate unique user id
-    const generateUserId = uuid4();
+    const generateUserId = uuidv4();
     // Hash the password
-    const hashedPassword = bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
         // Connect to the Database and get the users collection.
@@ -70,7 +70,7 @@ app.post('/signup', async (req, res) => {
         // Console log if any error.
         console.log(err);
     } finally {
-        await client.close()
+        await client.close();
     };
 });
 
@@ -90,7 +90,7 @@ app.post('/login', async (req, res) => {
         // Check for existing user.
         const user = await users.findOne({ email });
         // Check for correct password.
-        const correctPassword = await bcrypt.compare(password, users.hashed_password);
+        const correctPassword = await bcrypt.compare(password, user.hashed_password);
 
         // if user and password is correct, create token and send response
         if (user && correctPassword) {
@@ -98,15 +98,16 @@ app.post('/login', async (req, res) => {
                 expiresIn: 60 * 24
             })
             res.status(201).json({token, userId: user.user_id, email});
-        }
-        // if user or password is incorrect.
-        res.status(400).send('Invalid Credentials');
+        } else {
+            // if user or password is incorrect.
+            res.status(400).send('Invalid Credentials');
+        };
 
     } catch (err) {
         // Console log if any error.
         console.log(err);
     } finally {
-        await client.close()
+        await client.close();
     };
 });
 
