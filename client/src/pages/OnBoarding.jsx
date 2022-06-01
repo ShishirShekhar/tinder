@@ -17,14 +17,17 @@
 
 // Import required modules
 import React, { useState } from 'react';
+import { useCookies } from 'react-cookie';
 // Import required components
 import Nav from '../components/Nav';
 
 // Create OnBoarding function
 const OnBoarding = () => {
+  // Create cookie
+  const [cookies, setCookie, removeCookie] = useCookies(['user']);
+
   // Create state for formData
   const [formData, setFromData] = useState({
-    user_id: '',
     fName: '',
     dob_day: '',
     dob_month: '',
@@ -32,7 +35,6 @@ const OnBoarding = () => {
     gender_identity: 'man',
     show_gender: false,
     gender_interest: 'woman',
-    email: '',
     url: '',
     about: '',
     match: []
@@ -176,7 +178,7 @@ const OnBoarding = () => {
             />
 
             <div className='photo-container'>
-              <img src={formData.url} alt='Profile' />
+              { formData.url && <img src={formData.url} alt='Profile' /> }
             </div>
           </section>
 
