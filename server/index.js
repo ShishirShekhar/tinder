@@ -28,8 +28,6 @@ app.post('/signup', async (req, res) => {
 
     // Get the email and password.
     const { email, password } = req.body;
-    console.log(email, password);
-
     // Generate unique user id
     const generateUserId = uuid4();
     // Hash the password
@@ -71,8 +69,45 @@ app.post('/signup', async (req, res) => {
     } catch (err) {
         // Console log if any error.
         console.log(err);
+    } finally {
+        await client.close()
     };
+});
 
+// Post '/login'
+app.post('/login', async (req, res) => {
+    // Get MongoClient.
+    const client = new MongoClient(process.env.URI);
+    // Get the email and password.
+    const { email, password } = req.body;
+    
+    try {
+        // Connect to the Database and get the users collection.
+        await client.connect();
+        const database = client.db('app-data');
+        const users = database.collection('users'); 
+
+        // Check for existing user.
+        const user = await users.findOne({ email });
+        // Check for correct password.
+        const correctPassword = await bcrypt.compare(password, users.hashed_password);
+
+        // if user and password is correct, create token and send response
+        if (user && correctPassword) {
+            const token = jwt.sign(user, email, {
+                expiresIn: 60 * 24
+            })
+            res.status(201).json({token, userId: user.user_id, email});
+        }
+        // if user or password is incorrect.
+        res.status(400).send('Invalid Credentials');
+
+    } catch (err) {
+        // Console log if any error.
+        console.log(err);
+    } finally {
+        await client.close()
+    };
 });
 
 // Get '/users'

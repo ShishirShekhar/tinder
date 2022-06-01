@@ -28,7 +28,7 @@ import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useCookie } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 
 // Create AuthModal component
 const AuthModal = ({ setShowModal, isSignUp, setIsSignUp }) => {
@@ -41,7 +41,7 @@ const AuthModal = ({ setShowModal, isSignUp, setIsSignUp }) => {
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [error, setError] = useState(null);
   // Create cookie
-  const [cookie, setCookie] = useCookie(['user']);
+  const [cookies, setCookie, removeCookie] = useCookies(null);
 
   // Create a function to setShowModal as false on click
   const handleClick = () => {
@@ -60,18 +60,17 @@ const AuthModal = ({ setShowModal, isSignUp, setIsSignUp }) => {
         return;
       }
       // Send email and password to backend.
-      const response = await axios.post('http://localhost:8000/signup', { email, password });
+      const response = await axios.post(`http://localhost:8000/${isSignUp ? 'signup' : 'login'}`, { email, password });
 
       // Set cookies.
-      setCookie('Email', response.data.email);
       setCookie('UserId', response.data.userId);
       setCookie('AuthToken', response.data.token);
 
-      // If success navigate to '/onboarding'.\
+      // If success navigate to '/onboarding' or '/dashboard' accordingly.
       const success = response.status === 201;
-      if (success) {
-        navigate('/onboarding');
-      };
+      if (success && isSignUp) navigate('/onboarding');
+      if (success && !isSignUp) navigate('/dashboard');
+
     }
     catch(error) {
       console.log(error);
