@@ -10,19 +10,32 @@
 
 // Import required modules.
 import React from 'react';
+import { useCookies } from 'react-cookie';
 
-const ChatHeader = () => {
+const ChatHeader = ({ user }) => {
+  // Create cookies.
+  const [cookies, setCookie, removeCookie] = useCookies(['user']);
+  //  Create a function to logout.
+  const logout = () => {
+    // remove cookies.
+    removeCookie('UserId', cookies.userId);
+    removeCookie('AuthToken', cookies.AuthToken);
+
+    // Reload the window
+    window.location.reload();
+  };
+
   return (
     <div className='chat-container-header'>
       {/* Create a division to show user profile and name */}
       <div className="profile">
         <div className="img-container">
-          <img src="" alt="" />
+          <img src={user.url} alt={"photo of" + user.fName} />
         </div>
-        <h3>UserName</h3>
+        <h3>{user.fName}</h3>
       </div>
       {/* Create logout icon */}
-      <i className="log-out-icon">⬅</i>
+      <i className="log-out-icon"n onClick={logout}>⬅</i>
     </div>
   );
 };

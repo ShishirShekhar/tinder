@@ -111,6 +111,32 @@ app.post('/login', async (req, res) => {
     };
 });
 
+// Get '/user'
+app.get('/user', async (req, res) => {
+    // Get MongoClient.
+    const client = new MongoClient(process.env.URI);
+    const userId = req.query.userId
+
+    try {
+        // Connect to the Database and get the users collection.
+        await client.connect();
+        const database = client.db('app-data');
+        const users = database.collection('users');
+
+        // Create query.
+        const query = { user_id: userId };
+        // Get the user.
+        const user = await users.findOne(query);
+
+        // Return user.
+        res.send(user);
+    } 
+    finally {
+        // Close client.
+        await client.close();
+    };
+});
+
 // Get '/users'
 app.get('/users', async (req, res) => {
     // Get MongoClient.

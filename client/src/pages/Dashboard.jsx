@@ -16,41 +16,69 @@
 */
 
 // Import required modules
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TinderCard from "react-tinder-card";
+import { useCookies } from 'react-cookie';
+import axios from 'axios';
 // Import required component
 import ChatContainer from "../components/ChatContainer";
 
-// Create a temporary database for name and image
-const db = [
-  {
-    name: "Richard Hendricks",
-    url: "https://html.com/wp-content/uploads/flamingo.webp",
-  },
-  {
-    name: "Erlich Bachman",
-    url: "https://html.com/wp-content/uploads/flamingo.webp",
-  },
-  {
-    name: "Monica Hall",
-    url: "https://html.com/wp-content/uploads/flamingo.webp",
-  },
-  {
-    name: "Jared Dunn",
-    url: "https://html.com/wp-content/uploads/flamingo.webp",
-  },
-  {
-    name: "Dinesh Chugtai",
-    url: "https://html.com/wp-content/uploads/flamingo.webp",
-  },
-];
-
 // Create Dashboard function
 const Dashboard = () => {
-  // Create characters.
-  const characters = db;
   // Create state for swipe direction.
   const [lastDirection, setLastDirection] = useState();
+  // Create state for user.
+  const [user, setUser] = useState(null);
+  // Create cookie
+  const [cookies, setCookie, removeCookie] = useCookies(['user']);
+
+  // Get userId.
+  const userId = cookies.UserId;
+
+  // Get user.
+  const getUser = async () => {
+    try {
+      // Get user from the backend.
+      const response = await axios.get('http://localhost:8000/user', {
+        params: { userId }
+      });
+      // Set user data.
+      setUser(response.data);
+    }
+    catch (err) {
+      // Console log if error.
+      console.log(err);
+    }
+  };
+
+  // Update user using useEffect.
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  // Create characters.
+  const characters = [
+    {
+      name: "Richard Hendricks",
+      url: "https://html.com/wp-content/uploads/flamingo.webp",
+    },
+    {
+      name: "Erlich Bachman",
+      url: "https://html.com/wp-content/uploads/flamingo.webp",
+    },
+    {
+      name: "Monica Hall",
+      url: "https://html.com/wp-content/uploads/flamingo.webp",
+    },
+    {
+      name: "Jared Dunn",
+      url: "https://html.com/wp-content/uploads/flamingo.webp",
+    },
+    {
+      name: "Dinesh Chugtai",
+      url: "https://html.com/wp-content/uploads/flamingo.webp",
+    },
+  ];
 
   // Create a function to set direction on swipe.
   const swiped = (direction, nameToDelete) => {
@@ -63,40 +91,44 @@ const Dashboard = () => {
   };
 
   return (
-    // Create division for dashboard
-    <div className="dashboard">
-      {/* Add ChatContainer */}
-      <ChatContainer />
+    <>
+      { user &&
+      // Create division for dashboard
+        <div className="dashboard">
+          {/* Add ChatContainer */}
+          <ChatContainer user={user} />
 
-      {/* Add swipe carrd */}
-      <div className="swipe-container">
-        <div className="card-container">
-          {/* Loop through all the characters. */}
-          {characters.map((character) => (
-            // Add TinderCard component.
-            <TinderCard
-              className="swipe"
-              key={character.name}
-              onSwipe={(dir) => swiped(dir, character.name)}
-              onCardLeftScreen={() => outOfFrame(character.name)}
-            >
-              {/* Add background Image to the card */}
-              <div className="card"
-                  style={{ backgroundImage: "url(" + character.url + ")" }}
-              >
-                {/* Add name to the card. */}
-                <h3>{character.name}</h3>
+          {/* Add swipe carrd */}
+          <div className="swipe-container">
+            <div className="card-container">
+              {/* Loop through all the characters. */}
+              {characters.map((character) => (
+                // Add TinderCard component.
+                <TinderCard
+                  className="swipe"
+                  key={character.name}
+                  onSwipe={(dir) => swiped(dir, character.name)}
+                  onCardLeftScreen={() => outOfFrame(character.name)}
+                >
+                  {/* Add background Image to the card */}
+                  <div className="card"
+                      style={{ backgroundImage: "url(" + character.url + ")" }}
+                  >
+                    {/* Add name to the card. */}
+                    <h3>{character.name}</h3>
+                  </div>
+                </TinderCard>
+              ))}
+              {/* Show swipe direction on the screen */}
+              <div className="swipe-info">
+                {lastDirection ? <p>You swiped {lastDirection}</p> : <p />}
               </div>
-            </TinderCard>
-          ))}
-          {/* Show swipe direction on the screen */}
-          <div className="swipe-info">
-            {lastDirection ? <p>You swiped {lastDirection}</p> : <p />}
+              
+            </div>
           </div>
-          
         </div>
-      </div>
-    </div>
+      }
+    </>
   );
 };
 

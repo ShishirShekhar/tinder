@@ -1,14 +1,6 @@
 // App.js renders all the react component which is used in this project.
 // App.js contains default export of App component.
 
-// Import required modules
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-// Import required components for the pages.
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import OnBoarding from './pages/OnBoarding';
-
 /* App component:
   App component is render all the pages required in this project.
   It returns BrowserRouter which helps in routing all the different pages.
@@ -18,8 +10,23 @@ import OnBoarding from './pages/OnBoarding';
     /onboarding  (used to render OnBoarding component)
 */
 
+// Import required modules
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+// Import required components for the pages.
+import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
+import OnBoarding from './pages/OnBoarding';
+
 // Create App function
 const App = () => {
+  // Create cookies.
+  const [cookies, setCookie, removeCookie] = useCookies(['user']);
+
+  // Get auth token
+  const AuthToken = cookies.AuthToken;
+
   return (
     // Create Browser Router
     <BrowserRouter>
@@ -27,8 +34,8 @@ const App = () => {
       <Routes>
         {/* Create path for each page */}
         <Route path={'/'} element={<Home />} />
-        <Route path={'/dashboard'} element={<Dashboard />} />
-        <Route path={'/onboarding'} element={<OnBoarding />} />
+        {AuthToken && <Route path={'/dashboard'} element={<Dashboard />} />}
+        {AuthToken && <Route path={'/onboarding'} element={<OnBoarding />} />}
       </Routes>
     </BrowserRouter>
   );

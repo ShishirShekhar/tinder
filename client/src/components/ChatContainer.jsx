@@ -16,12 +16,12 @@ import ChatHeader from './ChatHeader';
 import MatchesDisplay from './MatchesDisplay';
 import ChatDisplay from './ChatDisplay';
 
-const ChatContainer = () => {
+const ChatContainer = ({ user }) => {
   return (
     // Create division for chat container
     <div className='chat-container'>
       {/* Add ChatHeader */}
-      <ChatHeader />
+      <ChatHeader user={user} />
       {/* Create division for matches and chat option */}
       <div>
         <button className="option">Matches</button>
