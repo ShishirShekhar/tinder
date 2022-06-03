@@ -18,6 +18,8 @@
 // Import required modules
 import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 // Import required components
 import Nav from '../components/Nav';
 
@@ -26,8 +28,12 @@ const OnBoarding = () => {
   // Create cookie
   const [cookies, setCookie, removeCookie] = useCookies(['user']);
 
+  // Initialize navigate.
+  let navigate = useNavigate();
+
   // Create state for formData
   const [formData, setFromData] = useState({
+    user_id: cookies.UserId,
     fName: '',
     dob_day: '',
     dob_month: '',
@@ -41,8 +47,21 @@ const OnBoarding = () => {
   });
 
   // Create a function for submit behavior.  
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      // Send the form data to backend
+      const response = await axios.put('http://localhost:8000/user', { formData });
+
+      // If success navigate to '/dashboard'.
+      const success = response.status === 200;
+      if (success) navigate('/dashboard');
+    } 
+    catch (err) {
+      // console log if any error
+      console.log(err);
+    }
   };
 
   // Create a function to update values on change

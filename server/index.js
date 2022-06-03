@@ -64,7 +64,7 @@ app.post('/signup', async (req, res) => {
             expiresIn: 60 * 24
         });
         // Send response.
-        res.status(201).json({ token });
+        res.status(201).json({ token, userId: generateUserId });
 
     } catch (err) {
         // Console log if any error.
@@ -97,7 +97,7 @@ app.post('/login', async (req, res) => {
             const token = jwt.sign(user, email, {
                 expiresIn: 60 * 24
             })
-            res.status(201).json({ token });
+            res.status(201).json({ token, userId: user.user_id });
         } else {
             // if user or password is incorrect.
             res.status(400).send('Invalid Credentials');
@@ -126,6 +126,51 @@ app.get('/users', async (req, res) => {
 
         // Return all users.
         res.send(returnedUsers);
+    } 
+    finally {
+        // Close client.
+        await client.close();
+    };
+});
+
+// Put '/user'
+app.put('/user', async (req, res) => {
+    // Get MongoClient.
+    const client = new MongoClient(process.env.URI);
+    const formData = req.body.formData;
+
+    try {
+        // Connect to the Database and get the users collection.
+        await client.connect();
+        const database = client.db('app-data');
+        const users = database.collection('users');
+
+        // Create query.
+        const query = { user_id: formData.user_id };
+        // Create object to update document.
+        const updateDocument = {
+            $set: {
+                fName: formData.fName,
+                dob_day: formData.dob_day,
+                dob_month: formData.dob_month,
+                dob_year: formData.dob_year,
+                gender_identity: formData.gender_identity,
+                show_gender: formData.show_gender,
+                gender_interest: formData.gender_interest,
+                url: formData.url,
+                about: formData.about,
+                match: formData.match
+            }
+        };
+
+        // Update user.
+        const updatedUser = await users.updateOne(query, updateDocument);
+        // Return updated user.
+        res.send(updatedUser);
+    } 
+    catch(err) {
+        // Console log if any error.
+        console.log(err);
     } 
     finally {
         // Close client.
